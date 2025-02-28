@@ -1,0 +1,23 @@
+commit d19bb37fe8cf267ca50a13a72913b62e29034772
+Author: Aayan Sayed <98489656+aas1128@users.noreply.github.com>
+Date:   Fri Feb 28 15:15:31 2025 -0500
+
+    added autodocumentation
+
+commit 31388e7638ab26e0ca816e78668e5ac66c0ee6db
+Author: Aayan Sayed <98489656+aas1128@users.noreply.github.com>
+Date:   Fri Feb 28 14:55:21 2025 -0500
+
+    added docstrings to the file
+
+commit ed2442e47df5edc12dec7afc5368d3baa6361039
+Author: Aayan Sayed <98489656+aas1128@users.noreply.github.com>
+Date:   Fri Feb 28 14:46:35 2025 -0500
+
+    added the writeup pdf
+
+commit 9b64a27153edff980a9d6fb68739fe5dfcc7646f
+Author: Aayan Sayed <98489656+aas1128@users.noreply.github.com>
+Date:   Fri Feb 28 11:30:41 2025 -0500
+
+    Forgot to commit changes between days of work...
