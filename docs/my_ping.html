@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>my_ping.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>my_ping.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">platform</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scapy.all</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span><span class="w"> </span><span class="nf">sendPacket</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">packetSize</span><span class="p">,</span> <span class="n">packetCount</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <pre><code>
+</code></pre>
+<p>Function that takes in a users params to create and send ICMP packets
+to a host. Waits for ECHO_RESPONSE and displays to screen.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Arguments: 
+Host -&gt; Name of the end host the ping will travel too.
+packetSize -&gt; Amount of data added into the payload of the ICMP packet
+packetCount -&gt; Amount of packets to send in the Ping
+Returns:
+False -&gt; If there is an invalid host Name </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>   
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dest_IP</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">packetCount</span><span class="p">):</span>
+            <span class="n">packet</span> <span class="o">=</span> <span class="n">scapy</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">IP</span><span class="p">(</span><span class="n">dst</span><span class="o">=</span><span class="n">dest_IP</span><span class="p">)</span> <span class="o">/</span> <span class="n">scapy</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">ICMP</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="s2">&quot;Aayan&quot;</span> <span class="o">*</span> <span class="n">packetSize</span><span class="p">)</span>
+            <span class="n">reply</span> <span class="o">=</span> <span class="n">scapy</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">sr1</span><span class="p">(</span><span class="n">packet</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">symbolic</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostbyaddr</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">src</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> 
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Original Ping Address:&quot;</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Host IP:&quot;</span><span class="p">,</span> <span class="n">reply</span><span class="o">.</span><span class="n">src</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Internal Host Name:&quot;</span><span class="p">,</span> <span class="n">symbolic</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">!=</span> <span class="n">packetCount</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+       <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not find host name.&quot;</span><span class="p">)</span>
+       <span class="k">return</span> <span class="kc">False</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span> 
+    <span class="c1"># &quot;&quot;&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Main function that reads in arguments before applying filters and 
+ Sending a ping </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Arguments: None
+ Returns:None </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="c1"># &quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span> <span class="c1">#count</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span> <span class="c1">#wait</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span> <span class="c1">#packetSize </span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-t&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span> <span class="c1">#time before terminate</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    
+    <span class="n">packetSize</span> <span class="o">=</span> <span class="mi">56</span>
+    <span class="n">packetCount</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">sleepVal</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">startTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">while</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span> 
+        <span class="n">destination</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">d</span>    
+        <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">s</span><span class="p">):</span>
+            <span class="n">packetSize</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">s</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">i</span><span class="p">):</span>
+            <span class="n">sleepVal</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">i</span>   
+        <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">c</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">c</span><span class="p">):</span>  
+                <span class="n">sendPacket</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span> <span class="n">packetSize</span><span class="p">,</span> <span class="n">packetCount</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleepVal</span><span class="p">)</span> 
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">t</span><span class="p">):</span>
+            <span class="n">currTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">currTime</span> <span class="o">-</span> <span class="n">startTime</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">args</span><span class="o">.</span><span class="n">t</span><span class="p">:</span>
+                <span class="k">break</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">keepRun</span> <span class="o">=</span> <span class="n">sendPacket</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span> <span class="n">packetSize</span><span class="p">,</span> <span class="n">packetCount</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleepVal</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">keepRun</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Please rerun the ping with a valid host name.&quot;</span><span class="p">)</span>
+            <span class="k">break</span>
+        
+
+
+
+
+    
+
+
+
+<span class="n">main</span> <span class="p">()</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

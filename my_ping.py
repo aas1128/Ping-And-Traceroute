@@ -7,8 +7,18 @@ import socket
 import scapy.all 
 
 def sendPacket(host, packetSize, packetCount): 
-   #packet = IP(dst=dest_ip) / ICMP() / ("X" * packet_size)
+#     
+# Function that takes in a users params to create and send ICMP packets
+# to a host. Waits for ECHO_RESPONSE and displays to screen.
 
+# Arguments: 
+# Host -> Name of the end host the ping will travel too.
+# packetSize -> Amount of data added into the payload of the ICMP packet
+# packetCount -> Amount of packets to send in the Ping
+# Returns:
+# False -> If there is an invalid host Name 
+# 
+   
     try:
         dest_IP = socket.gethostbyname(host)
         for count in range(packetCount):
@@ -27,6 +37,13 @@ def sendPacket(host, packetSize, packetCount):
        
 
 def main(): 
+    # """
+    #  Main function that reads in arguments before applying filters and 
+    #  Sending a ping 
+
+    #  Arguments: None
+    #  Returns:None 
+    # """
     parser = argparse.ArgumentParser()
     parser.add_argument("d")
     parser.add_argument("-c", type=int) #count

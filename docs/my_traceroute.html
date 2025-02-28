@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>my_traceroute.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>my_traceroute.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">platform</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scapy.all</span> 
+<span class="kn">import</span><span class="w"> </span><span class="nn">socket</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Main function that reads in arguments applies filters and constructs 
+ packets before sending probes across network to implement traceroute.
+ Arguments: None
+ Returns:None </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-n&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">)</span> <span class="c1">#count</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-S&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span> <span class="p">)</span> <span class="c1">#packetSize </span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-q&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="c1">#packetSize </span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">dest_IP</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">ttlCount</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="mi">53</span>
+        <span class="n">nonans</span> <span class="o">=</span> <span class="mi">0</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Sending the packet and receive a reply</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">for</span> <span class="n">query</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">q</span><span class="p">):</span>
+            <span class="n">ip_packet</span> <span class="o">=</span> <span class="n">scapy</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">IP</span><span class="p">(</span><span class="n">dst</span><span class="o">=</span><span class="n">dest_IP</span><span class="p">,</span> <span class="n">ttl</span><span class="o">=</span><span class="n">ttlCount</span><span class="p">)</span>
+            <span class="n">udp_packet</span> <span class="o">=</span> <span class="n">scapy</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">UDP</span><span class="p">(</span><span class="n">dport</span><span class="o">=</span><span class="n">port</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Here I tried to create a UDP packet header with the correct port
+however UDP packets were getting blocked for some reason.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">packet</span> <span class="o">=</span> <span class="n">ip_packet</span> <span class="o">/</span> <span class="n">scapy</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">ICMP</span><span class="p">()</span> <span class="c1"># Had to use ICMP packets instead to get a response</span>
+            <span class="n">reply</span> <span class="o">=</span> <span class="n">scapy</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">sr1</span><span class="p">(</span><span class="n">packet</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">port</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">reply</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>No reply, print * for timeout</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                <span class="n">nonans</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ttlCount</span><span class="si">}</span><span class="s2"> *&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">symbolic</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostbyaddr</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">src</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>       
+                <span class="k">except</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">herror</span><span class="p">):</span>
+                    <span class="n">symbolic</span> <span class="o">=</span> <span class="s2">&quot;No Host Name Found&quot;</span>
+
+
+                <span class="k">if</span> <span class="n">reply</span><span class="o">.</span><span class="n">haslayer</span><span class="p">(</span><span class="n">scapy</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">ICMP</span><span class="p">)</span> <span class="ow">and</span> <span class="n">reply</span><span class="p">[</span><span class="n">scapy</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">ICMP</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Destination reached, print the details</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">n</span><span class="p">:</span>
+                     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ttlCount</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">reply</span><span class="o">.</span><span class="n">src</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ttlCount</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">reply</span><span class="o">.</span><span class="n">src</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">symbolic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                    <span class="k">return</span> 
+                <span class="k">else</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Printing the IP address of the intermediate hop</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">n</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ttlCount</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">reply</span><span class="o">.</span><span class="n">src</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ttlCount</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">reply</span><span class="o">.</span><span class="n">src</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">symbolic</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">S</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of unanswered packets:&quot;</span> <span class="p">,</span> <span class="n">nonans</span><span class="p">)</span>
+        <span class="n">ttlCount</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">ttlCount</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="k">break</span> 
+          
+    <span class="k">return</span> 
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>       
+    <span class="n">main</span><span class="p">()</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
