@@ -5,6 +5,12 @@ import platform
 import scapy.all 
 import socket
 
+"""
+     Main function that reads in arguments applies filters and constructs 
+     packets before sending probes across network to implement traceroute.
+     Arguments: None
+     Returns:None 
+    """
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("d")
