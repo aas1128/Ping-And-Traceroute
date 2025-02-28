@@ -29,23 +29,27 @@ def ping():
     counter = 0
     packetSize = 56
     packetCount = 1
+    sleepVal = 1
     startTime = time.time()
     while(True): 
         destination = args.d    
         if (args.s):
             packetSize = args.s
         if (args.i):
-            time.sleep(args.t)
+            sleepVal = args.i
         if (args.c):
-            packetCount = args.c    
-            sendPacket(destination, packetSize, packetCount)
+            for x in range(args.c):
+                sendPacket(destination, packetSize, packetCount)
+                time.sleep(sleepVal)
+
             break
         if (args.t):
             currTime = time.time()
             if (currTime - startTime) > args.t:
                 break
         sendPacket(destination, packetSize, packetCount)
-        break
+        time.sleep(sleepVal)
+        
          
 
 
